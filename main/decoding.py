@@ -3,6 +3,24 @@ import wave
 import json
 import os
 from pydub import AudioSegment
+<<<<<<< HEAD
+from config import INPUT_FOLDER, OUTPUT_FOLDER, MODEL_PATH
+
+# Временная папка для WAV файлов
+TEMP_WAV_FOLDER = os.path.join(INPUT_FOLDER, "temp_wav")
+
+# Создание папок
+os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+os.makedirs(TEMP_WAV_FOLDER, exist_ok=True)
+
+# Проверка модели
+if not os.path.exists(MODEL_PATH):
+    print(f"Модель не найдена в {MODEL_PATH}")
+    exit(1)
+
+model = Model(MODEL_PATH)
+
+=======
 
 # Пути к папкам и модели
 input_folder = r"C:\Users\User\Documents\Телемост\video_files_for_text_extraction"
@@ -25,17 +43,32 @@ if not os.path.exists(model_path):
 model = Model(model_path)
 
 # Конвертация WebM или MP4 в WAV
+>>>>>>> 61141a2ae3096747b08d30813e1e2cdd984c1140
 def convert_to_wav(input_file, output_file, file_format):
     try:
         audio = AudioSegment.from_file(input_file, format=file_format)
         audio = audio.set_channels(1).set_frame_rate(16000).set_sample_width(2)
         audio.export(output_file, format="wav")
+<<<<<<< HEAD
+=======
         print(f"Сконвертирован: {output_file}")
+>>>>>>> 61141a2ae3096747b08d30813e1e2cdd984c1140
         return True
     except Exception as e:
         print(f"Ошибка конвертации {input_file}: {e}")
         return False
 
+<<<<<<< HEAD
+def process_audio(audio_file, output_text_file):
+    try:
+        with wave.open(audio_file, 'rb') as wf:
+            # Проверка формата
+            if not (wf.getnchannels() == 1 and wf.getsampwidth() == 2 and wf.getframerate() == 16000):
+                print(f"Неверный формат WAV: {audio_file}")
+                return False
+            
+            recognizer = KaldiRecognizer(model, 16000)
+=======
 # Проверка формата WAV
 def check_wav_format(file_path):
     try:
@@ -54,6 +87,7 @@ def process_audio(audio_file, output_text_file, recognizer):
             if not check_wav_format(audio_file):
                 print(f"Файл {audio_file} должен быть WAV, моно, 16-bit, 16000 Hz")
                 return False
+>>>>>>> 61141a2ae3096747b08d30813e1e2cdd984c1140
             with open(output_text_file, 'w', encoding='utf-8') as txt_file:
                 while True:
                     data = wf.readframes(4000)
@@ -62,17 +96,48 @@ def process_audio(audio_file, output_text_file, recognizer):
                     if recognizer.AcceptWaveform(data):
                         result = json.loads(recognizer.Result())['text']
                         if result:
+<<<<<<< HEAD
+                            txt_file.write(result + " ")
+                
+                final_result = json.loads(recognizer.FinalResult())['text']
+                if final_result:
+                    txt_file.write(final_result)
+        
+        print(f"Готово: {output_text_file}")
+        return True
+=======
                             txt_file.write(result + "\n")
                 final_result = json.loads(recognizer.FinalResult())['text']
                 if final_result:
                     txt_file.write(final_result + "\n")
             print(f"Результат сохранен: {output_text_file}")
             return True
+>>>>>>> 61141a2ae3096747b08d30813e1e2cdd984c1140
     except Exception as e:
         print(f"Ошибка обработки {audio_file}: {e}")
         return False
 
 # Обработка файлов
+<<<<<<< HEAD
+for filename in os.listdir(INPUT_FOLDER):
+    if filename.endswith((".wav", ".webm", ".mp4")):
+        input_file = os.path.join(INPUT_FOLDER, filename)
+        output_text_file = os.path.join(OUTPUT_FOLDER, f"{os.path.splitext(filename)[0]}.txt")
+        
+        print(f"Обработка: {filename}")
+        
+        if filename.endswith((".webm", ".mp4")):
+            temp_wav_file = os.path.join(TEMP_WAV_FOLDER, f"{os.path.splitext(filename)[0]}_temp.wav")
+            file_format = "webm" if filename.endswith(".webm") else "mp4"
+            
+            if convert_to_wav(input_file, temp_wav_file, file_format):
+                if process_audio(temp_wav_file, output_text_file):
+                    os.remove(temp_wav_file)
+        else:
+            process_audio(input_file, output_text_file)
+
+print("Обработка завершена.")
+=======
 for filename in os.listdir(input_folder):
     if filename.endswith((".wav", ".webm", ".mp4")):
         input_file = os.path.join(input_folder, filename)
@@ -95,3 +160,4 @@ for filename in os.listdir(input_folder):
             process_audio(input_file, output_text_file, recognizer)
 
 print("Обработка завершена.")
+>>>>>>> 61141a2ae3096747b08d30813e1e2cdd984c1140

@@ -1,23 +1,12 @@
-# Virtual environments
+model/
+*.wav
+*.mp4
+*.webm
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
 venv/
 .venv/
-env/
-ENV/
-
-# Byte-compiled files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Logs
-*.log
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
